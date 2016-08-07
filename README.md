@@ -1,37 +1,45 @@
 # DashButtonContainer
-A Dockerfile and script that makes it easy to run an environment for listening to Amazon Dash button communications
 
+A Dockerfile and python script that makes it easy to run an environment for listening to Amazon Dash button communications
 
 Got the original code from : https://gist.github.com/eob/a8b5632f23e75b311df2
+On that gist you'll see code that will likely not work with a newer Dash button that is now available. Below is modified code to listen to new button. 
 
-The new version of the button behaves slightly differently and doesn't in the same manner. Modified code to listen to new button. This will listen for anything on the network.
 
-from scapy.all import *
+The default code will listen for everything on the network sending the type of messages we expect from the Dash button.
 
-def arp_display(pkt):
-  if pkt[ARP].op == 1: #who-has (request)
-    print "ARP Probe from: " + pkt[ARP].hwsrc
+Once you have the hardware address of the button(s) you care for, you can update the code with filters
 
-print sniff(prn=arp_display, filter="arp", store=0, count=10)
-
-This version will filter by MAC address of the button you have
-
+----------------------------------------
 from scapy.all import *
 def arp_display(pkt):
   if pkt[ARP].op == 1: #who-has (request)
-    if pkt[ARP].hwsrc == 'c0:ff:ee:c0:ff:ee':
+    # Checking for specific hardware address of my button
+**    if pkt[ARP].hwsrc == 'c0:ff:ee:c0:ff:ee':
       print "You need coffee"
-      print "Now you can do stuff"
-    else:
+      print "Now you can do stuff when this button is pressed"**
+    else:**
       print "ARP Probe from unknown device: " + pkt[ARP].hwsrc
 
 print sniff(prn=arp_display, filter="arp", store=0, count=10)
+----------------------------------------
 
-Build Container : 
+This docker image isn't hosted on Docker hub, so you'll need to build it locally. In order for this to work you'll need
 
-docker build --tag "dashbuttonlistener:latest" ./DashButtonContainer/
+* To run it on a machine on the same network as the dash button
+* To have docker installed and running on this machine
+* To run the container with it's network attached to the host (--network=host)
 
-Run Container : 
+## Build Container from top level of project : 
+
+docker build --tag "dashbuttonlistener:latest" .
+
+## Run Container after it has been built : 
+
+Running it in the fore ground, so its console out is seen
 
 docker run --rm --network=host dashbuttonlistener:latest
 
+Running it in the back ground. You'll need to tail the container to see its output
+
+docker run --detach --network=host dashbuttonlistener:latest
