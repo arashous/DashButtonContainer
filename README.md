@@ -10,19 +10,13 @@ The default code will listen for everything on the network sending the type of m
 
 Once you have the hardware address of the button(s) you care for, you can update the code with filters
 
-----------------------------------------
-from scapy.all import *
-def arp_display(pkt):
   if pkt[ARP].op == 1: #who-has (request)
     # Checking for specific hardware address of my button
-**    if pkt[ARP].hwsrc == 'c0:ff:ee:c0:ff:ee':
+    if pkt[ARP].hwsrc == 'c0:ff:ee:c0:ff:ee':
       print "You need coffee"
       print "Now you can do stuff when this button is pressed"**
-    else:**
+    else:
       print "ARP Probe from unknown device: " + pkt[ARP].hwsrc
-
-print sniff(prn=arp_display, filter="arp", store=0, count=10)
-----------------------------------------
 
 This docker image isn't hosted on Docker hub, so you'll need to build it locally. In order for this to work you'll need
 
