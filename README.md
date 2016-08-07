@@ -28,14 +28,20 @@ This docker image isn't hosted on Docker hub, so you'll need to build it locally
 
 ## Build Container from top level of project : 
 
+```
 docker build --tag "dashbuttonlistener:latest" .
+```
 
 ## Run Container after it has been built : 
 
 Running it in the fore ground, so its console out is seen
 
+```
 docker run --rm --network=host dashbuttonlistener:latest
+```
 
 Running it in the back ground. You'll need to tail the container to see its output
 
+```
 docker run --detach --network=host dashbuttonlistener:latest
+```
